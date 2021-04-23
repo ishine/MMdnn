@@ -104,7 +104,6 @@ ENV/
 node_modules/
 package-lock.json
 *.log
-.vscode/
 
 # tests temporary files
 tests/cache/
@@ -112,3 +111,11 @@ tests/tmp/
 
 # Visual Studio
 .vs/
+.vscode/
+
+# JetBrains
+.idea/
+
+# macOS
+# Desktop Services Store files
+.DS_Store

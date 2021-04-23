@@ -793,15 +793,15 @@ class MXNetParser(Parser):
 
     def rename_LRN(self, source_node):
         IR_node = self._convert_identity_operation(source_node)
+        alpha = source_node.get_attr("alpha", "0.0001")
+        beta = source_node.get_attr("beta", "0.75")
+        bias = source_node.get_attr("knorm", "2")
+        size = source_node.get_attr("nsize")
 
-        # alpha
-        IR_node.attr["alpha"].f = float(source_node.get_attr("alpha", "0.0001"))
-        # beta
-        IR_node.attr["beta"].f = float(source_node.get_attr("beta", "0.75"))
-        # knorm
-        IR_node.attr["k"].f = float(source_node.get_attr("knorm", "2"))
-        # nsize
-        IR_node.attr["size"].i = float(source_node.get_attr["nsize"])
+        IR_node.attr["alpha"].f = alpha
+        IR_node.attr["beta"].f = beta
+        IR_node.attr["bias"].f = bias
+        IR_node.attr["size"].i = size
 
 
     def rename_ROIPooling(self, source_node):
@@ -821,6 +821,17 @@ class MXNetParser(Parser):
     """
     Here start with Symbol manipulation routines
     """
+
+    def rename_UpSampling(self, source_node):
+        IR_node = self._convert_identity_operation(source_node, new_op="UpSampling2D")
+        kwargs = dict()
+        scale = int(source_node.get_attr("scale"))
+        interpolation_type = source_node.get_attr("sample_type")
+        scales = [scale, scale]
+        kwargs["scales"] = scales
+        kwargs["interpolation_type"] = interpolation_type
+        assign_IRnode_values(IR_node, kwargs)
+
 
     # reverse cannot support yet
     def rename_reshape(self, source_node):
